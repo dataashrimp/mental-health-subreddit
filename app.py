@@ -13,12 +13,15 @@ import datetime
 import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
 from collections import Counter
+from google.cloud import storage
+import io
 #from bertopic import BERTopic
 
 
 # Streamlit page configurations
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(layout="wide",page_title="Reddit Analysis")
+GCP_CREDENTIALS_PATH = st.secrets["GCP_CREDENTIALS_PATH"]
 
 # Download 'vader_lexicon' and create global SentimentIntensityAnalyzer instance
 # This is more preformant than creating an instance every time we need to analyze sentiment
@@ -27,6 +30,28 @@ try:
 except LookupError:
     nltk.download('vader_lexicon')
 sentiment_analyzer = SentimentIntensityAnalyzer()
+
+def list_blobs_with_prefix(bucket_name, prefix, credentials_path):
+    """Lists all the blobs in the bucket that begin with the prefix."""
+    storage_client = storage.Client.from_service_account_json(credentials_path)
+    blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
+    names = [blob.name for blob in blobs]
+    return names
+
+def read_csv_from_gcloud(bucket_name, source_blob_name, credentials_path):
+    """Reads a CSV file from Google Cloud Storage into a pandas DataFrame."""
+    storage_client = storage.Client.from_service_account_json(credentials_path)
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    data = blob.download_as_bytes()
+    data_stream = io.BytesIO(data)
+    return pd.read_csv(data_stream)
+
+def load_all_csvs_from_folder(bucket_name, folder_path, credentials_path):
+    """Loads all CSV files from a specified folder in GCP bucket into a single DataFrame."""
+    all_files = list_blobs_with_prefix(bucket_name, folder_path, credentials_path=credentials_path)
+    all_dfs = [read_csv_from_gcloud(bucket_name, file, credentials_path) for file in all_files if file.endswith('.csv')]
+    return pd.concat(all_dfs, ignore_index=True)
 
 def load_data(data_file):
     """
@@ -331,14 +356,17 @@ def main():
             - Top 10 Most Frequent Words: Identify the most commonly used words in posts. 
             """
         )
-    # Sidebar to select subreddit
-    data_file = "./data/data_csv_selfharm_submissions.csv"  # Replace with the actual path to your DataFrame
-    data_file2 = './data/data_zipfiles_alcoholism_submissions.csv'
-    data_file3 = './data/data_zipfiles_Anger_submissions.csv'
 
-    df1 = load_data(data_file)
-    df2 = load_data(data_file2)
-    df3 = load_data(data_file3)
+    # Sidebar to select subreddit
+    bucket_name = 'groupprojectdata'
+
+    data_folder1 = 'data_csv/Anger/'
+    data_folder2 = 'data_csv/selfharm/'
+    data_folder3 = 'data_csv/alcoholism/'
+
+    df1 = load_all_csvs_from_folder(bucket_name, data_folder1, GCP_CREDENTIALS_PATH)
+    df2 = load_all_csvs_from_folder(bucket_name, data_folder2, GCP_CREDENTIALS_PATH)
+    df3 = load_all_csvs_from_folder(bucket_name, data_folder3, GCP_CREDENTIALS_PATH)
 
     df = pd.concat([df1, df2, df3], axis=0)
 
