@@ -16,15 +16,28 @@ from collections import Counter
 from google.cloud import storage
 import io
 #from bertopic import BERTopic
+import json
+from google.oauth2.service_account import Credentials
+
+# Load the GCP credentials from Streamlit secrets
+gcp_credentials = json.loads(st.secrets["GCP_CREDENTIALS"])
+
+# Create a credentials object from the dictionary
+creds = Credentials.from_service_account_info(gcp_credentials)
+
+# Use the credentials to authenticate with GCP
+storage_client = storage.Client(credentials=creds, project='cse6242-groupproject-403600')
 
 
 # Streamlit page configurations
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(layout="wide",page_title="Reddit Analysis")
-GCP_CREDENTIALS_PATH = st.secrets["GCP_CREDENTIALS_PATH"]
+
+# For local testing only
+# GCP_CREDENTIALS_PATH = st.secrets["GCP_CREDENTIALS_PATH"]
 
 # Download 'vader_lexicon' and create global SentimentIntensityAnalyzer instance
-# This is more preformant than creating an instance every time we need to analyze sentiment
+# This is more performant than creating an instance every time we need to analyze sentiment
 try:
     nltk.data.find('sentiment/vader_lexicon')
 except LookupError:
