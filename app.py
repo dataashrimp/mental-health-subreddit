@@ -20,10 +20,7 @@ import json
 from google.oauth2.service_account import Credentials
 
 # Load the GCP credentials from Streamlit secrets
-print("Loading GCP credentials...")
-print(st.secrets)
-print(st.secrets["GCP_CREDENTIALS"])
-gcp_credentials = json.loads(**st.secrets["GCP_CREDENTIALS"])
+gcp_credentials = json.loads(st.secrets)
 
 # Create a credentials object from the dictionary
 creds = Credentials.from_service_account_info(gcp_credentials)
