@@ -60,7 +60,11 @@ def read_csv_from_gcloud(bucket_name, source_blob_name, gcp_credentials):
     data_stream = io.BytesIO(data)
     return pd.read_csv(data_stream)
 
-@st.cache
+@st.cache(hash_funcs={dict: id})
+def load_all_csvs_from_folder_wrapper(bucket_name, folder_path):
+    """Wrapper function for load_all_csvs_from_folder that takes hashable arguments."""
+    return load_all_csvs_from_folder(bucket_name, folder_path, st.secrets)
+
 def load_all_csvs_from_folder(bucket_name, folder_path, gcp_credentials):
     """Loads all CSV files from a specified folder in GCP bucket into a single DataFrame."""
     all_files = list_blobs_with_prefix(bucket_name, folder_path, gcp_credentials=gcp_credentials)
@@ -378,9 +382,9 @@ def main():
     data_folder2 = 'data_csv/selfharm/'
     data_folder3 = 'data_csv/alcoholism/'
 
-    df1 = load_all_csvs_from_folder(bucket_name, data_folder1, GCP_CREDENTIALS_PATH)
-    df2 = load_all_csvs_from_folder(bucket_name, data_folder2, GCP_CREDENTIALS_PATH)
-    df3 = load_all_csvs_from_folder(bucket_name, data_folder3, GCP_CREDENTIALS_PATH)
+    df1 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder1)
+    df2 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder2)
+    df3 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder3)
 
     df = pd.concat([df1, df2, df3], axis=0)
 
