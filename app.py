@@ -41,12 +41,13 @@ except LookupError:
     nltk.download('vader_lexicon')
 sentiment_analyzer = SentimentIntensityAnalyzer()
 
-def list_blobs_with_prefix(bucket_name, prefix, credentials_path):
+def list_blobs_with_prefix(bucket_name, prefix, gcp_credentials):
     """Lists all the blobs in the bucket that begin with the prefix."""
-    storage_client = storage.Client.from_service_account_json(credentials_path)
+
+    creds = Credentials.from_service_account_info(gcp_credentials)
+    storage_client = storage.Client(credentials=creds)
     blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
-    names = [blob.name for blob in blobs]
-    return names
+    return blobs
 
 def read_csv_from_gcloud(bucket_name, source_blob_name, credentials_path):
     """Reads a CSV file from Google Cloud Storage into a pandas DataFrame."""
