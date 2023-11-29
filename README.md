@@ -1,5 +1,7 @@
 # cse6242-project: Sentiment Analysis on Mental-Health in Reddit
 
+Deployment: https://dataashrimp-mental-health-subreddit-app-o6aicy.streamlit.app/
+
 We seek to create an interactive visualization dashboard which analyzes the sentiment in mental health focus forums using Reddit data. 
 - Identify posts that suggest declining mental health
 - Identify influential users within communities
