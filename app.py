@@ -20,10 +20,10 @@ import json
 from google.oauth2.service_account import Credentials
 
 # Load the GCP credentials from Streamlit secrets
-gcp_credentials = st.secrets
+GCP_CREDENTIALS_PATH = st.secrets
 
 # Create a credentials object from the dictionary
-creds = Credentials.from_service_account_info(gcp_credentials)
+creds = Credentials.from_service_account_info(GCP_CREDENTIALS_PATH)
 
 # Use the credentials to authenticate with GCP
 storage_client = storage.Client(credentials=creds, project='cse6242-groupproject-403600')
@@ -32,9 +32,6 @@ storage_client = storage.Client(credentials=creds, project='cse6242-groupproject
 # Streamlit page configurations
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(layout="wide",page_title="Reddit Analysis")
-
-# For local testing only
-# GCP_CREDENTIALS_PATH = st.secrets["GCP_CREDENTIALS_PATH"]
 
 # Download 'vader_lexicon' and create global SentimentIntensityAnalyzer instance
 # This is more performant than creating an instance every time we need to analyze sentiment
