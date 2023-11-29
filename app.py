@@ -49,19 +49,20 @@ def list_blobs_with_prefix(bucket_name, prefix, gcp_credentials):
     blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
     return blobs
 
-def read_csv_from_gcloud(bucket_name, source_blob_name, credentials_path):
+def read_csv_from_gcloud(bucket_name, source_blob_name, gcp_credentials):
     """Reads a CSV file from Google Cloud Storage into a pandas DataFrame."""
-    storage_client = storage.Client.from_service_account_json(credentials_path)
+    creds = Credentials.from_service_account_info(gcp_credentials)
+    storage_client = storage.Client(credentials=creds)
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
     data = blob.download_as_bytes()
     data_stream = io.BytesIO(data)
     return pd.read_csv(data_stream)
 
-def load_all_csvs_from_folder(bucket_name, folder_path, credentials_path):
+def load_all_csvs_from_folder(bucket_name, folder_path, gcp_credentials):
     """Loads all CSV files from a specified folder in GCP bucket into a single DataFrame."""
-    all_files = list_blobs_with_prefix(bucket_name, folder_path, credentials_path=credentials_path)
-    all_dfs = [read_csv_from_gcloud(bucket_name, file, credentials_path) for file in all_files if file.endswith('.csv')]
+    all_files = list_blobs_with_prefix(bucket_name, folder_path, gcp_credentials=gcp_credentials)
+    all_dfs = [read_csv_from_gcloud(bucket_name, file, gcp_credentials) for file in all_files if file.endswith('.csv')]
     return pd.concat(all_dfs, ignore_index=True)
 
 def load_data(data_file):
