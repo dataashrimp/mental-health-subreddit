@@ -60,6 +60,7 @@ def read_csv_from_gcloud(bucket_name, source_blob_name, gcp_credentials):
     data_stream = io.BytesIO(data)
     return pd.read_csv(data_stream)
 
+@st.cache
 def load_all_csvs_from_folder(bucket_name, folder_path, gcp_credentials):
     """Loads all CSV files from a specified folder in GCP bucket into a single DataFrame."""
     all_files = list_blobs_with_prefix(bucket_name, folder_path, gcp_credentials=gcp_credentials)
