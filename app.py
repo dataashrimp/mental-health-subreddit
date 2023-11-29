@@ -47,7 +47,8 @@ def list_blobs_with_prefix(bucket_name, prefix, gcp_credentials):
     creds = Credentials.from_service_account_info(gcp_credentials)
     storage_client = storage.Client(credentials=creds)
     blobs = storage_client.list_blobs(bucket_name, prefix=prefix)
-    return blobs
+
+    return [blob.name for blob in blobs]
 
 def read_csv_from_gcloud(bucket_name, source_blob_name, gcp_credentials):
     """Reads a CSV file from Google Cloud Storage into a pandas DataFrame."""
