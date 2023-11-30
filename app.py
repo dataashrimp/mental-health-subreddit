@@ -353,11 +353,11 @@ def filter_posts_by_date(posts, date_range):
     return posts[mask]
 
 def main():
-    st.title("Geographic Subreddit Community Analysis")
+    st.title("Mental Health Subreddit Community Analysis")
     if st.button("ℹ️ Info"):
         st.sidebar.info(
             """
-            This application allows Reddit users and moderators to gain insights into their community's activities, user behavior, and evaluate the sentiment of posts. Follow the guidelines below.
+            This application allows Reddit moderators to gain insights into their community's activities, user behavior, and evaluate the sentiment of posts. Follow the guidelines below.
 
             Subreddit Selection: Use the sidebar to select the subreddit you want to analyze. 
 
@@ -377,9 +377,9 @@ def main():
     # Sidebar to select subreddit
     bucket_name = 'groupprojectdata'
 
-    data_folder1 = 'data_csv/Seattle/'
-    data_folder2 = 'data_csv/SanDiego/'
-    data_folder3 = 'data_csv/NYC/'
+    data_folder1 = 'data_csv/Anger/'
+    data_folder2 = 'data_csv/selfharm/'
+    data_folder3 = 'data_csv/alcoholism/'
 
     df1 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder1)
     df2 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder2)
@@ -387,21 +387,21 @@ def main():
 
     df = pd.concat([df1, df2, df3], axis=0)
 
-    df = df[['author','over_18','num_comments','created_utc','ups','score','selftext','subreddit','title','url','downs']]   
+    df = df[['author','over_18','num_comments','created_utc','ups','score','post_categories','selftext','subreddit','title','url','downs']]   
     df = df[df["author"] != '[deleted]']
 
     df = df[df['created_utc'].notna()]
     df = df[df['subreddit'].notna()]
 
-    # Convert 'created_utc' to numeric to allow for filtering by date
-    df['created_utc'] = pd.to_numeric(df['created_utc'], errors='coerce')
-
     if df is not None:
         subreddit = st.sidebar.selectbox("Select a subreddit", df["subreddit"].unique())
         
+       # Create date range slider in the sidebar
         # Create date range selector in the sidebar
         start_date = st.sidebar.date_input("Start Date", min_value=pd.to_datetime(df['created_utc'].min(), unit='s'), value=pd.to_datetime(df['created_utc'].min(), unit='s'))
+
         end_date = st.sidebar.date_input("End Date", max_value=pd.to_datetime(df['created_utc'].max(), unit='s'), value=pd.to_datetime(df['created_utc'].max(), unit='s'))
+
 
         # Filter posts based on selected date range
         filtered_posts = filter_posts_by_date(df, (start_date, end_date))
