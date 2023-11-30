@@ -60,7 +60,7 @@ def read_csv_from_gcloud(bucket_name, source_blob_name, gcp_credentials):
     data_stream = io.BytesIO(data)
     return pd.read_csv(data_stream)
 
-@st.cache(hash_funcs={dict: id})
+@st.cache_data(hash_funcs={dict: id})
 def load_all_csvs_from_folder_wrapper(bucket_name, folder_path):
     """Wrapper function for load_all_csvs_from_folder that takes hashable arguments."""
     return load_all_csvs_from_folder(bucket_name, folder_path, st.secrets)
@@ -357,7 +357,7 @@ def main():
     if st.button("ℹ️ Info"):
         st.sidebar.info(
             """
-            This application allows Reddit moderators to gain insights into their community's activities, user behavior, and evaluate the sentiment of posts. Follow the guidelines below.
+            This application allows Reddit users and moderators to gain insights into their community's activities, user behavior, and evaluate the sentiment of posts. Follow the guidelines below.
 
             Subreddit Selection: Use the sidebar to select the subreddit you want to analyze. 
 
