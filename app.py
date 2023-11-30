@@ -387,6 +387,8 @@ def main():
 
     df = pd.concat([df1, df2, df3], axis=0)
 
+    st.write(df.columns)
+
     df = df[['author','over_18','num_comments','created_utc','ups','score','post_categories','selftext','subreddit','title','url','downs']]   
     df = df[df["author"] != '[deleted]']
 
