@@ -58,7 +58,7 @@ def read_csv_from_gcloud(bucket_name, source_blob_name, gcp_credentials):
     blob = bucket.blob(source_blob_name)
     data = blob.download_as_bytes()
     data_stream = io.BytesIO(data)
-    return pd.read_csv(data_stream)
+    return pd.read_csv(data_stream, low_memory=False)
 
 @st.cache_data(hash_funcs={dict: id})
 def load_all_csvs_from_folder_wrapper(bucket_name, folder_path):
