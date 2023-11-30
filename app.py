@@ -353,7 +353,7 @@ def filter_posts_by_date(posts, date_range):
     return posts[mask]
 
 def main():
-    st.title("Mental Health Subreddit Community Analysis")
+    st.title("Geographic Subreddit Community Analysis")
     if st.button("ℹ️ Info"):
         st.sidebar.info(
             """
@@ -370,7 +370,6 @@ def main():
             - Posts Popularity Over Time: Analyze the popularity of posts over time to help understand when your subreddit is most active.
             - Sentiment Analysis: Gauge  overall sentiment of posts in your subreddit. 
             - Flagged Comments: Explore comments with low sentiment scores. These may indicate posts that need attention or moderation.
-            - Network Analysis: Visualize the relationships between authors and their comments. Identify patterns and connections within your community.
             - Top 10 Most Frequent Words: Identify the most commonly used words in posts. 
             """
         )
@@ -378,9 +377,9 @@ def main():
     # Sidebar to select subreddit
     bucket_name = 'groupprojectdata'
 
-    data_folder1 = 'data_csv/Anger/'
-    data_folder2 = 'data_csv/selfharm/'
-    data_folder3 = 'data_csv/alcoholism/'
+    data_folder1 = 'data_csv/Seattle/'
+    data_folder2 = 'data_csv/SanDiego/'
+    data_folder3 = 'data_csv/NYC/'
 
     df1 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder1)
     df2 = load_all_csvs_from_folder_wrapper(bucket_name, data_folder2)
