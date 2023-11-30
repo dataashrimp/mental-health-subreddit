@@ -5,6 +5,7 @@ We seek to create an interactive visualization dashboard which analyzes the sent
 - Identify influential users within communities
 - Identify and provide most shared and effective resources
 
+Dashboard: https://dataashrimp-mental-health-subreddit-app-o6aicy.streamlit.app/
 
 Code developed by: Tamara Alhajj, Carter Burns, Andrew Gamaley, Alexandra Keamy, Devlin Santos
 
