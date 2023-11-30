@@ -393,15 +393,15 @@ def main():
     df = df[df['created_utc'].notna()]
     df = df[df['subreddit'].notna()]
 
+    # Convert 'created_utc' to numeric to allow for filtering by date
+    df['created_utc'] = pd.to_numeric(df['created_utc'], errors='coerce')
+
     if df is not None:
         subreddit = st.sidebar.selectbox("Select a subreddit", df["subreddit"].unique())
         
-       # Create date range slider in the sidebar
         # Create date range selector in the sidebar
         start_date = st.sidebar.date_input("Start Date", min_value=pd.to_datetime(df['created_utc'].min(), unit='s'), value=pd.to_datetime(df['created_utc'].min(), unit='s'))
-
         end_date = st.sidebar.date_input("End Date", max_value=pd.to_datetime(df['created_utc'].max(), unit='s'), value=pd.to_datetime(df['created_utc'].max(), unit='s'))
-
 
         # Filter posts based on selected date range
         filtered_posts = filter_posts_by_date(df, (start_date, end_date))
