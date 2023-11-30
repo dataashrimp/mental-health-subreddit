@@ -387,7 +387,7 @@ def main():
 
     df = pd.concat([df1, df2, df3], axis=0)
 
-    df = df[['author','author_flair_text','over_18','num_comments','created_utc','ups','score','post_categories','permalink','selftext','subreddit','title','url','downs']]   
+    df = df[['author','over_18','num_comments','created_utc','ups','score','selftext','subreddit','title','url','downs']]   
     df = df[df["author"] != '[deleted]']
 
     df = df[df['created_utc'].notna()]
