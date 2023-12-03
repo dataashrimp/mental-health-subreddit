@@ -392,6 +392,8 @@ def main():
 
     df = df[df['created_utc'].notna()]
     df = df[df['subreddit'].notna()]
+    df['ups'] = df['ups'].fillna(0)
+    df['downs'] = df['downs'].fillna(0)
 
     if df is not None:
         subreddit = st.sidebar.selectbox("Select a subreddit", df["subreddit"].unique())
